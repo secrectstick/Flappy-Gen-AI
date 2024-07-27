@@ -9,6 +9,11 @@ namespace GenAI
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+
+        private Texture2D texture;
+        private Rectangle testRect;
+        private int count;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -21,6 +26,11 @@ namespace GenAI
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            count = 0;
+            testRect = new Rectangle(50,50,50,50);
+            
+
         }
 
         protected override void LoadContent()
@@ -28,6 +38,7 @@ namespace GenAI
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            texture = Content.Load<Texture2D>("purple");
         }
 
         protected override void Update(GameTime gameTime)
@@ -37,6 +48,19 @@ namespace GenAI
 
             // TODO: Add your update logic here
 
+            KeyboardState kbstate = Keyboard.GetState();
+
+            if (count < 1 && kbstate.IsKeyDown(Keys.Space))
+            {
+                count = 20;
+            }
+
+
+            testRect.Y -= count/2;
+
+            count--;
+
+
             base.Update(gameTime);
         }
 
@@ -44,6 +68,11 @@ namespace GenAI
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            _spriteBatch.Begin();
+
+            _spriteBatch.Draw(texture, testRect,Color.White);
+
+            _spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);

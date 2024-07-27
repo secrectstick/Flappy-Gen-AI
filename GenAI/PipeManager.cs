@@ -9,19 +9,22 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GenAI
 {
-    internal class Player
+    internal class PipeManager
     {
-        // rect
-        // texture
-        // isalive bool
 
-        //loadContent
-
-        // ctor
-
-        //update (transfer logic from game1 as well as add death detection)
+        // six default pipes
 
 
-        // draw
+        // loadcontent
+
+        // default ctor
+
+        // reset method 
+
+        // update (adds new pipes and finds the next pipe(use a queue))
+
+
+        // draw all pipes but next pipe as a diff color
+
     }
 }
