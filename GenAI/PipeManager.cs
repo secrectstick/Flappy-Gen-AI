@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -24,13 +25,14 @@ namespace GenAI
 
 
         public Texture2D pipeTexture;
-
+        public SpriteFont arial;
 
         public List<Pipe> pipes;
         public Queue<Pipe> queue;
 
 
         private int count;
+        private int testscr;
 
         // loadcontent
 
@@ -43,6 +45,8 @@ namespace GenAI
             p4.loadContent(content);
             p5.loadContent(content);
             p6.loadContent(content);
+
+            arial = content.Load<SpriteFont>("arial");
         }
 
         // default ctor
@@ -61,23 +65,30 @@ namespace GenAI
             queue = new Queue<Pipe>();
             count = 0;
             rng= new Random();
+            testscr = 0;
         }
 
         // reset method 
         public void reset() 
         {
-            pipes.Add(p1);
-            pipes.Add(p2);
-            pipes.Add(p3);
-            pipes.Add(p4);
-            pipes.Add(p5);
-            pipes.Add(p6);
-            queue.Enqueue(p1);
-            queue.Enqueue(p2);
-            queue.Enqueue(p3);
-            queue.Enqueue(p4);
-            queue.Enqueue(p5);
-            queue.Enqueue(p6);
+            //pipes.Add(p1);
+            //pipes.Add(p2);
+            //pipes.Add(p3);
+            //pipes.Add(p4);
+            //pipes.Add(p5);
+            //pipes.Add(p6);
+            //queue.Enqueue(p1);
+            //queue.Enqueue(p2);
+            //queue.Enqueue(p3);
+            //queue.Enqueue(p4);
+            //queue.Enqueue(p5);
+            //queue.Enqueue(p6);
+
+            queue.Clear();
+            count = 0;
+            pipes.Clear();
+            testscr = 0;
+
         }
 
         // update (adds new pipes and finds the next pipe(use a queue))
@@ -151,7 +162,7 @@ namespace GenAI
                 if (tempPipe.topRect.Right < player.Position.Right)// change 0 to player.x
                 {
                     queue.Dequeue();
-                    // increment score
+                    testscr++;
                 }
             }
 
@@ -163,6 +174,22 @@ namespace GenAI
                     pipes.RemoveAt(i);
                     i--;
                 }
+            }
+
+            for (int i = 0; i < pipes.Count; i++)
+            {
+                if (pipes[i].hitPipe(player.Position))
+                {
+                    player.isAlive = false;
+                }
+            }
+
+
+            if (!player.isAlive)
+            {
+                reset();
+                player.Position.Y = 150;
+                player.isAlive = true;
             }
 
         }
@@ -185,6 +212,8 @@ namespace GenAI
 
                 temp.drawPipe(sb, Color.Red);
             }
+
+            sb.DrawString(arial,$"score: {testscr}", new Vector2 (50,50), Color.White);
         }
 
     }
