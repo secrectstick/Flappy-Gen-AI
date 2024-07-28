@@ -15,13 +15,15 @@ namespace GenAI
         private Rectangle testRect;
         private int count;
         Player player;
-
+        PipeManager pipeManager;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 800;
         }
 
         protected override void Initialize()
@@ -31,7 +33,7 @@ namespace GenAI
             base.Initialize();
            
             count = 0;
-            testRect = new Rectangle(50,50,50,50);
+            testRect = new Rectangle(900,200,50,50);
             
 
         }
@@ -45,6 +47,8 @@ namespace GenAI
             texture = Content.Load<Texture2D>("purple");
 
             player = new Player(testRect, texture);
+            pipeManager = new PipeManager();
+            pipeManager.loadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -54,19 +58,17 @@ namespace GenAI
 
             // TODO: Add your update logic here
 
-            KeyboardState kbstate = Keyboard.GetState();
+            //KeyboardState kbstate = Keyboard.GetState();
 
-            if (count < 1 && kbstate.IsKeyDown(Keys.Space))
+            testRect.X -= 3;
+
+            if (testRect.Right < 0)
             {
-                count = 20;
+                testRect.X = 900;
             }
 
-
-            testRect.Y -= count/2;
-
-            count--;
-
             player.update();
+            pipeManager.update(player);
 
             base.Update(gameTime);
         }
@@ -80,6 +82,10 @@ namespace GenAI
             //_spriteBatch.Draw(texture, testRect,Color.White);
 
             player.draw(_spriteBatch);
+            pipeManager.draw(_spriteBatch);
+
+            //_spriteBatch.Draw(texture,new Rectangle(300,0,40,200),Color.White); // toprect
+            //_spriteBatch.Draw(texture, new Rectangle(300, 400, 40, 400), Color.White); // bot rect
 
             _spriteBatch.End();
             // TODO: Add your drawing code here

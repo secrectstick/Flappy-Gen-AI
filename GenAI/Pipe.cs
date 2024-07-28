@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -45,13 +44,18 @@ namespace GenAI
         }
 
 
+        public void loadContent(ContentManager content)
+        {
+            pipeTexture = content.Load<Texture2D>("purple");
+        }
+
         // ctor that takes in two rects for top and bot
 
         public Pipe(Rectangle topRect,Rectangle botRect,Texture2D pipeTexture)
         {
             this.topRect = topRect;
             this.botRect = botRect;
-            this.pipeTexture = pipeTexture;
+            //this.pipeTexture = pipeTexture;
         }
 
         // methd that checks if a rect hits either of the pipes
@@ -61,6 +65,14 @@ namespace GenAI
             return player.Intersects(botRect) || player.Intersects(topRect);    
         }
 
+
+        // make a move func
+
+        public void move()
+        {
+            topRect.X -= 3;
+            botRect.X -= 3; 
+        }
 
         // draw pipe
         public void drawPipe(SpriteBatch sb,Color color)

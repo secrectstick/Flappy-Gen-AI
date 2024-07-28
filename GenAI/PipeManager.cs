@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,19 +37,27 @@ namespace GenAI
         public void loadContent(ContentManager content)
         {
             pipeTexture = content.Load<Texture2D>("purple");
+            p1.loadContent(content);
+            p2.loadContent(content);
+            p3.loadContent(content);
+            p4.loadContent(content);
+            p5.loadContent(content);
+            p6.loadContent(content);
         }
 
         // default ctor
 
         public PipeManager()
         {
-            p1 = new Pipe();
-            p2 = new Pipe();
-            p3 = new Pipe();
-            p4 = new Pipe();
-            p5 = new Pipe();
-            p6 = new Pipe();
+            p1 = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350),pipeTexture);
+            p2 = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200),pipeTexture);
+            p3 = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
+            p4 = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
+            p5 = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
+            p6 = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
             pipes = new List<Pipe>();
+            
+
             queue = new Queue<Pipe>();
             count = 0;
             rng= new Random();
@@ -59,7 +66,18 @@ namespace GenAI
         // reset method 
         public void reset() 
         {
-
+            pipes.Add(p1);
+            pipes.Add(p2);
+            pipes.Add(p3);
+            pipes.Add(p4);
+            pipes.Add(p5);
+            pipes.Add(p6);
+            queue.Enqueue(p1);
+            queue.Enqueue(p2);
+            queue.Enqueue(p3);
+            queue.Enqueue(p4);
+            queue.Enqueue(p5);
+            queue.Enqueue(p6);
         }
 
         // update (adds new pipes and finds the next pipe(use a queue))
@@ -67,9 +85,18 @@ namespace GenAI
         {
             count++;
 
+            //if (count == 1)
+            //{
+            //    reset();
+            //}
 
-            //creating new pipes
-            if (count > 100)
+            // it goes super sonic bc i make multiple of the same pipe then they gcall move multiple times on the same pipe
+
+
+            // why does it stop spawning pipes
+
+            // creating new pipes
+            if (count == 20)
             {
                 count = 0;
                 int temp = rng.Next(0, 6);
@@ -78,33 +105,44 @@ namespace GenAI
                 {
                     case 0:
                         newPipe = p1;
+                        pipes.Add(p1);
+                        queue.Enqueue(p1);
                         break;
                     case 1:
                         newPipe = p2;
+                        pipes.Add(p2);
+                        queue.Enqueue(p2);
                         break;
                     case 2:
                         newPipe = p3;
+                        pipes.Add(p3);
+                        queue.Enqueue(p3);
                         break;
                     case 3:
                         newPipe = p4;
+                        pipes.Add(p4);
+                        queue.Enqueue(p4);
                         break;
                     case 4:
                         newPipe = p5;
+                        pipes.Add(p5);
+                        queue.Enqueue(p5);
                         break;
                     case 5:
                         newPipe = p6;
+                        pipes.Add(p6);
+                        queue.Enqueue(p6);
                         break;
                 }
                 // add a new pipe to pipes. then add to queue as well(randomly)
-                pipes.Add(newPipe);
-                queue.Enqueue(newPipe);
+                //pipes.Add(newPipe);
+                //queue.Enqueue(newPipe);
             }
 
             // foreach pipe in pipes x-=3
             foreach (Pipe pipe in pipes)
             {
-                pipe.topRect.X-=3;
-                pipe.botRect.X-=3;
+                pipe.move();
             }
 
             //Pipe temp = queue.Peek();
@@ -112,11 +150,27 @@ namespace GenAI
             // foreach pipe if player rect intersects the player die
 
             // peek the queue if it past the player dequeue
-            Pipe tempPipe = queue.Peek();
-            if(tempPipe.topRect.Right < 0)// change 0 to player.x
+            if (queue.Count > 0)
             {
-                queue.Dequeue();
+                Pipe tempPipe = queue.Peek();
+                if (tempPipe.topRect.Right < 0)// change 0 to player.x
+                {
+                    queue.Dequeue();
+                }
             }
+
+            // make this a for loop not foreach
+            //for (int i = 0; i < pipes.Count; i++)
+            //{
+            //    if (pipes[i].topRect.Right < 0)
+            //    {
+            //        pipes[i].topRect.X=900;
+            //        pipes[i].botRect.X=900;
+                    
+            //        queue.Enqueue(pipes[i]);
+            //        i--;
+            //    }
+            //}
 
         }
 
@@ -131,10 +185,13 @@ namespace GenAI
                 pipe.drawPipe(sb, Color.White);
             }
 
-            Pipe temp = queue.Peek();
 
-            temp.drawPipe(sb, Color.Red);
+            if (queue.Count > 0)
+            {
+                Pipe temp = queue.Peek();
 
+                temp.drawPipe(sb, Color.Red);
+            }
         }
 
     }
