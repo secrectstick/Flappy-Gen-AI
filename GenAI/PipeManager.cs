@@ -184,11 +184,16 @@ namespace GenAI
                 }
             }
 
+            if (player.Position.Top < 0 || player.Position.Bottom > 800)
+            {
+                player.isAlive = false;
+            }
 
             if (!player.isAlive)
             {
                 reset();
                 player.Position.Y = 150;
+                player.count = 0;
                 player.isAlive = true;
             }
 

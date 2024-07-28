@@ -21,7 +21,7 @@ namespace GenAI
         public bool isAlive;
 
         //loadContent
-        private int count;
+        public int count;
 
         
 
