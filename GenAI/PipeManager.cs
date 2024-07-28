@@ -81,7 +81,7 @@ namespace GenAI
         }
 
         // update (adds new pipes and finds the next pipe(use a queue))
-        public void update(Player player)
+        public void update(Player player,ContentManager content)
         {
             count++;
 
@@ -96,7 +96,7 @@ namespace GenAI
             // why does it stop spawning pipes
 
             // creating new pipes
-            if (count == 20)
+            if (count == 100)
             {
                 count = 0;
                 int temp = rng.Next(0, 6);
@@ -104,39 +104,34 @@ namespace GenAI
                 switch (temp)
                 {
                     case 0:
-                        newPipe = p1;
-                        pipes.Add(p1);
-                        queue.Enqueue(p1);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
+
                         break;
                     case 1:
-                        newPipe = p2;
-                        pipes.Add(p2);
-                        queue.Enqueue(p2);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
+
                         break;
                     case 2:
-                        newPipe = p3;
-                        pipes.Add(p3);
-                        queue.Enqueue(p3);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
+
                         break;
                     case 3:
-                        newPipe = p4;
-                        pipes.Add(p4);
-                        queue.Enqueue(p4);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
+
                         break;
                     case 4:
-                        newPipe = p5;
-                        pipes.Add(p5);
-                        queue.Enqueue(p5);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
+
                         break;
                     case 5:
-                        newPipe = p6;
-                        pipes.Add(p6);
-                        queue.Enqueue(p6);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
+
                         break;
                 }
                 // add a new pipe to pipes. then add to queue as well(randomly)
-                //pipes.Add(newPipe);
-                //queue.Enqueue(newPipe);
+                newPipe.loadContent(content);
+                pipes.Add(newPipe);
+                queue.Enqueue(newPipe);
             }
 
             // foreach pipe in pipes x-=3
@@ -153,24 +148,22 @@ namespace GenAI
             if (queue.Count > 0)
             {
                 Pipe tempPipe = queue.Peek();
-                if (tempPipe.topRect.Right < 0)// change 0 to player.x
+                if (tempPipe.topRect.Right < player.Position.Right)// change 0 to player.x
                 {
                     queue.Dequeue();
+                    // increment score
                 }
             }
 
             // make this a for loop not foreach
-            //for (int i = 0; i < pipes.Count; i++)
-            //{
-            //    if (pipes[i].topRect.Right < 0)
-            //    {
-            //        pipes[i].topRect.X=900;
-            //        pipes[i].botRect.X=900;
-                    
-            //        queue.Enqueue(pipes[i]);
-            //        i--;
-            //    }
-            //}
+            for (int i = 0; i < pipes.Count; i++)
+            {
+                if (pipes[i].topRect.Right < 0)
+                {
+                    pipes.RemoveAt(i);
+                    i--;
+                }
+            }
 
         }
 

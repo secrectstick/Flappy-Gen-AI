@@ -68,7 +68,7 @@ namespace GenAI
             }
 
             player.update();
-            pipeManager.update(player);
+            pipeManager.update(player,Content);
 
             base.Update(gameTime);
         }
