@@ -70,8 +70,8 @@ namespace GenAI
             testscr = 0;
 
             genCount = 0;
-            genBestScore = 0;
-            bestScore = 0;
+            genBestScore = 1;
+            bestScore = 5;
 
             curFormula = new Formula(1.0);
             genBestFormula = new Formula(1.0);  
@@ -86,39 +86,13 @@ namespace GenAI
             queue.Clear();
             count = 0;
             pipes.Clear();
-            testscr = 0;
+            curScore = 0;
 
 
             // make new pipe instantly
             int temp = rng.Next(0, 6);
-            Pipe newPipe = new Pipe();
-            switch (temp)
-            {
-                case 0:
-                    newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
-
-                    break;
-                case 1:
-                    newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
-
-                    break;
-                case 2:
-                    newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
-
-                    break;
-                case 3:
-                    newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
-
-                    break;
-                case 4:
-                    newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
-
-                    break;
-                case 5:
-                    newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
-
-                    break;
-            }
+            Pipe newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
+            
             // add a new pipe to pipes. then add to queue as well(randomly)
             newPipe.loadContent(content);
             pipes.Add(newPipe);
@@ -132,36 +106,9 @@ namespace GenAI
             // adds pipe when player first starts
             if (count == -1)
             {
-                int temp = rng.Next(0, 6);
-                Pipe newPipe = new Pipe();
-                switch (temp)
-                {
-                    case 0:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
+                
+                Pipe newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
 
-                        break;
-                    case 1:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
-
-                        break;
-                    case 2:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
-
-                        break;
-                    case 3:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
-
-                        break;
-                    case 4:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
-
-                        break;
-                    case 5:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
-
-                        break;
-                }
-                // add a new pipe to pipes. then add to queue as well(randomly)
                 newPipe.loadContent(content);
                 pipes.Add(newPipe);
                 queue.Enqueue(newPipe);
@@ -248,10 +195,10 @@ namespace GenAI
             if (queue.Count > 0)
             {
                 Pipe tempPipe = queue.Peek();
-                if (tempPipe.topRect.Right < player.Position.Right)// change 0 to player.x
+                if (tempPipe.topRect.Right < player.Position.Left)// change 0 to player.x
                 {
                     queue.Dequeue();
-                    testscr++;
+                    curScore++; // 
                 }
             }
 
@@ -280,8 +227,33 @@ namespace GenAI
                 player.isAlive = false;
             }
 
+
+            if(curScore> genBestScore + 5)
+            {
+                player.isAlive = false;
+            }
+
             if (!player.isAlive)
-            {   
+            {
+                // increment pop count
+                popCount++;
+                // if curScore > gen best score
+                //  {
+                //  genbestformula = cur formula
+                //  genbestscore = curscore
+                //  }
+                if (curScore > genBestScore)
+                {
+                    genBestScore = curScore;
+                    genBestFormula = curFormula;
+                }
+                // variance = 1.0 / (bestscore / 5.0)
+                double variance = 1.0 / (bestScore / 5.0);
+                // rngvar = rng.Next(-variance,variance + 1) * rng.nextDouble();
+                double rngVar = GetRandomNumber(-variance, variance);
+                // curFormula= new formula(Bestformula.Theta + rngvar)
+                curFormula = new Formula(bestFormula.Theta + rngVar);
+
                 reset(content);
                 player.Position.Y = 150;
                 player.count = 0;
@@ -291,6 +263,39 @@ namespace GenAI
             // add genetic stuff here
 
 
+            // if popcount==100
+            if (popCount == 100)
+            {
+                genCount++;
+                popCount = 0;
+                if (genBestScore > bestScore)
+                {
+                    bestScore = genBestScore;
+                    bestFormula = genBestFormula;
+                }
+                // variance = 1.0 / (bestscore / 5.0)
+                double variant = 1.0 / (bestScore / 5.0);
+                // rngvar = rng.Next(-variance,variance + 1) * rng.nextDouble();
+                double rngVart = GetRandomNumber(-variant, variant);
+                // curFormula= new formula(Bestformula.Theta + rngvar)
+                curFormula = new Formula(bestFormula.Theta + rngVart);
+            }
+            // gencount++;
+            // popcount=0;
+            // if genbestscore > bestscore
+            //  {
+            //  best formula = genbestformula 
+            //  bestscore = genbestscore 
+            //  }
+
+            
+
+        }
+
+
+        public double GetRandomNumber(double minimum, double maximum)
+        {
+            return rng.NextDouble() * (maximum - minimum) + minimum;
         }
 
         // draw all pipes but next pipe as a diff color
@@ -312,7 +317,14 @@ namespace GenAI
                 temp.drawPipe(sb, Color.Red);
             }
 
-            sb.DrawString(arial,$"score: {testscr}", new Vector2 (50,50), Color.White);
+            sb.DrawString(arial,$"curscore: {curScore}", new Vector2 (50,50), Color.White);
+            sb.DrawString(arial, $"genscore: {genBestScore}", new Vector2(50, 75), Color.White);
+            sb.DrawString(arial, $"bestscore: {bestScore}", new Vector2(50, 100), Color.White);
+            sb.DrawString(arial, $"pop: {popCount}", new Vector2(50, 125), Color.White);
+            sb.DrawString(arial, $"gen: {genCount}", new Vector2(50, 150), Color.White);
+            sb.DrawString(arial, $"curtheta: {curFormula.Theta}", new Vector2(50, 175), Color.White);
+            sb.DrawString(arial, $"gentheta: {genBestFormula.Theta}", new Vector2(50, 200), Color.White);
+            sb.DrawString(arial, $"besttheta: {bestFormula.Theta}", new Vector2(50, 225), Color.White);
         }
 
     }
