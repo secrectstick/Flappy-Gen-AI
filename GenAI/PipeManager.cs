@@ -225,11 +225,14 @@ namespace GenAI
             if(queue.Count > 0)
             {
                 Pipe trigPipe = queue.Peek();
-                KeyboardState kb = Keyboard.GetState();
+                //KeyboardState kb = Keyboard.GetState();
 
                 // player jumping
-                if (player.count < 1 && bestFormula.formulate(
-                    player.Position.Center.X, player.Position.Center.Y,trigPipe.topPos.X, trigPipe.topPos.Y, trigPipe.botPos.X, trigPipe.botPos.Y))
+                if (player.count < 1 && 
+                    curFormula.formulate(
+                    player.Position.Center.X, player.Position.Center.Y,
+                    trigPipe.topPos.X, trigPipe.topPos.Y, 
+                    trigPipe.botPos.X, trigPipe.botPos.Y))
                 {
                     player.jump();
                 }

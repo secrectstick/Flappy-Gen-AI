@@ -66,16 +66,28 @@ namespace GenAI
             
         }
 
+        // arccos == Acos in .net
         public double BTheta(double a, double b, double c)
         {
-            
-            return 0.0;
+            double b2 = b * b;
+            double c2 = c * c;  
+            double a2 = a * a;
+            double numer = b2-a2-c2;
+            double denom = -2 * a * c;
+
+            return Math.Acos(numer/denom);
         }
 
 
         public double CTheta(double a, double b, double c)
         {
-            return 0.0;
+            double b2 = b * b;
+            double c2 = c * c;
+            double a2 = a * a;
+            double numer = c2 - a2 - b2;
+            double denom = -2 * a * b;
+
+            return Math.Acos(numer / denom);
         }
 
     }
