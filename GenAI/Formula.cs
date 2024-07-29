@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,12 @@ namespace GenAI
     {
         private double theta;
 
+        public double Theta
+        {
+            get { return theta; }
+        }
+
+
         public Formula(double theta)
         {
             this.theta = theta;
@@ -21,7 +28,12 @@ namespace GenAI
 
         private double dist(double x1, double y1, double x2, double y2)
         {
-            return 0.0;
+            double xdiff = x1-x2;
+            double ydiff = y1-y2;
+            xdiff = xdiff * xdiff;
+            ydiff = ydiff * ydiff;
+
+            return Math.Sqrt(xdiff+ydiff);
         }
 
         /// <summary>
@@ -37,7 +49,34 @@ namespace GenAI
         public bool formulate(double pX, double pY, 
             double tX, double tY,double bX,double bY)
         {
-            return true;
+            double a = dist(bX, bY, tX, tY);
+            double b = dist(pX, pY, bX, bY);
+            double c = dist(pX, pY, tX, tY);
+
+            double ratio = BTheta(a,b,c) / CTheta(a,b,c);
+
+            if(ratio< theta)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
+
+        public double BTheta(double a, double b, double c)
+        {
+            
+            return 0.0;
+        }
+
+
+        public double CTheta(double a, double b, double c)
+        {
+            return 0.0;
+        }
+
     }
 }
