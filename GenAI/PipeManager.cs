@@ -151,6 +151,14 @@ namespace GenAI
                 pipe.move();
             }
 
+            KeyboardState kb = Keyboard.GetState();
+
+            // player jumping
+            if(player.count<1 && kb.IsKeyDown(Keys.Space))
+            {
+                player.jump();
+            }
+
             //Pipe temp = queue.Peek();
 
             // foreach pipe if player rect intersects the player die

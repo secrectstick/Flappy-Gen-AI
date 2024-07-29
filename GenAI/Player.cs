@@ -40,15 +40,20 @@ namespace GenAI
         {
             KeyboardState kbstate = Keyboard.GetState();
 
-            if (count < 1 && kbstate.IsKeyDown(Keys.Space))
-            {
-                count = 20;
-            }
+            //if (count < 1 && kbstate.IsKeyDown(Keys.Space))
+            //{
+            //    jump();
+            //}
 
 
             Position.Y -= count / 2;
 
             count--;
+        }
+
+        public void jump()
+        {
+            count = 20;
         }
 
         // draw
