@@ -68,10 +68,11 @@ namespace GenAI
 
         // make a move func
 
-        public void move()
+        public void move(int x)
         {
-            topRect.X -= 3;
-            botRect.X -= 3; 
+            
+            topRect.X -= 3 ;
+            botRect.X -= 3 ; 
         }
 
         // draw pipe

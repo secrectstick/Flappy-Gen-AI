@@ -31,6 +31,9 @@ namespace GenAI
 
         // loadcontent
 
+        double curDist;
+        double genBestDist;
+        double bestDist;
 
         // genetic stuff
 
@@ -73,9 +76,13 @@ namespace GenAI
             genBestScore = 1;
             bestScore = 5;
 
-            curFormula = new Formula(1.0);
-            genBestFormula = new Formula(1.0);  
-            bestFormula = new Formula(1.0);
+            curDist = 0.0;
+            genBestDist = 1.0;
+            
+
+            curFormula = new Formula(10.0);
+            genBestFormula = new Formula(10.0);  
+            bestFormula = new Formula(10.0);
         }
 
         // reset method 
@@ -117,14 +124,14 @@ namespace GenAI
 
 
             count++;
-
+            curDist += 1.0;
             
 
             // it goes super sonic bc i make multiple of the same pipe then they gcall move multiple times on the same pipe
 
 
             // creating new pipes
-            if (count == 100)
+            if (count == 100 )
             {
                 count = 0;
                 int temp = rng.Next(0, 6);
@@ -144,15 +151,15 @@ namespace GenAI
 
                         break;
                     case 3:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 250), new Rectangle(900, 450, 40, 350), pipeTexture);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 100), new Rectangle(900, 300, 40, 500), pipeTexture);
 
                         break;
                     case 4:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 400), new Rectangle(900, 600, 40, 200), pipeTexture);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 500), new Rectangle(900, 700, 40, 100), pipeTexture);
 
                         break;
                     case 5:
-                        newPipe = new Pipe(new Rectangle(900, 0, 40, 200), new Rectangle(900, 400, 40, 400), pipeTexture);
+                        newPipe = new Pipe(new Rectangle(900, 0, 40, 325), new Rectangle(900, 525, 40, 275), pipeTexture);
 
                         break;
                 }
@@ -165,7 +172,7 @@ namespace GenAI
             // moves the pipes
             foreach (Pipe pipe in pipes)
             {
-                pipe.move();
+                pipe.move(curScore);
             }
 
             
@@ -242,17 +249,35 @@ namespace GenAI
                 //  genbestformula = cur formula
                 //  genbestscore = curscore
                 //  }
-                if (curScore > genBestScore)
+                if (curDist > genBestDist)
                 {
+                    genBestDist = curDist;
                     genBestScore = curScore;
                     genBestFormula = curFormula;
                 }
+                curDist = 0.0;
                 // variance = 1.0 / (bestscore / 5.0)
-                double variance = 1.0 / (bestScore / 5.0);
+                double variance;
+                if(genBestScore == 0)
+                {
+                    variance = 500.0/genBestDist;
+                    double rngVar = GetRandomNumber(-variance, variance);
+                    curFormula = new Formula(bestFormula.Theta + rngVar);
+                }
+                else
+                {
+                    variance = 5.0 / ((bestScore+1) / 5.0);
+
+                    // rngvar = rng.Next(-variance,variance + 1) * rng.nextDouble();
+                    double rngVar = GetRandomNumber(-variance, variance);
+                    // curFormula= new formula(Bestformula.Theta + rngvar)
+                    curFormula = new Formula(bestFormula.Theta + rngVar);
+                }
+                
                 // rngvar = rng.Next(-variance,variance + 1) * rng.nextDouble();
-                double rngVar = GetRandomNumber(-variance, variance);
+                //double rngVar = GetRandomNumber(-variance, variance);
                 // curFormula= new formula(Bestformula.Theta + rngvar)
-                curFormula = new Formula(bestFormula.Theta + rngVar);
+                //curFormula = new Formula(bestFormula.Theta + rngVar);
 
                 reset(content);
                 player.Position.Y = 150;
@@ -268,13 +293,14 @@ namespace GenAI
             {
                 genCount++;
                 popCount = 0;
-                if (genBestScore > bestScore)
+                if (genBestDist > bestDist)
                 {
+                    bestDist = genBestDist;
                     bestScore = genBestScore;
                     bestFormula = genBestFormula;
                 }
                 // variance = 1.0 / (bestscore / 5.0)
-                double variant = 1.0 / (bestScore / 5.0);
+                double variant = 5.0 / (bestScore / 5.0);
                 // rngvar = rng.Next(-variance,variance + 1) * rng.nextDouble();
                 double rngVart = GetRandomNumber(-variant, variant);
                 // curFormula= new formula(Bestformula.Theta + rngvar)
@@ -325,6 +351,9 @@ namespace GenAI
             sb.DrawString(arial, $"curtheta: {curFormula.Theta}", new Vector2(50, 175), Color.White);
             sb.DrawString(arial, $"gentheta: {genBestFormula.Theta}", new Vector2(50, 200), Color.White);
             sb.DrawString(arial, $"besttheta: {bestFormula.Theta}", new Vector2(50, 225), Color.White);
+            sb.DrawString(arial, $"curdist: {curDist}", new Vector2(50, 250), Color.White);
+            sb.DrawString(arial, $"gendist: {genBestDist}", new Vector2(50, 275), Color.White);
+            sb.DrawString(arial, $"bestdist: {bestDist}", new Vector2(50, 300), Color.White);
         }
 
     }
