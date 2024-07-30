@@ -299,7 +299,7 @@ namespace GenAI
                 {
                     //fitness test
 
-                    System.Diagnostics.Debug.WriteLine($"gen: {genCount - 1}, fit: {(genBestScore - bestScore) * 0.0001}"); // figure out why fitness tester no work
+                    System.Diagnostics.Debug.WriteLine($"gen: {genCount - 1}, fit: {(genBestScore - bestScore) * 0.0001}"); 
                     
                     bestDist = genBestDist;
                     bestScore = genBestScore;
