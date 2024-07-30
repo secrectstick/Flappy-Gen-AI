@@ -235,7 +235,7 @@ namespace GenAI
             }
 
 
-            if(curScore> genBestScore + 5)
+            if(curScore> genBestScore + 10)
             {
                 player.isAlive = false;
             }
