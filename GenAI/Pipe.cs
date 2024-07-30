@@ -68,7 +68,7 @@ namespace GenAI
 
         // make a move func
 
-        public void move(int x)
+        public void move()
         {
             
             topRect.X -= 3 ;

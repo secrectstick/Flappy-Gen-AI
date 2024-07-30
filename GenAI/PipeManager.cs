@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
+
 
 namespace GenAI
 {
@@ -42,9 +44,9 @@ namespace GenAI
         int genCount;
 
         // scores
-        int curScore;
-        int genBestScore;
-        int bestScore;
+        double curScore;
+        double genBestScore;
+        double bestScore;
 
         // formulas
 
@@ -72,9 +74,9 @@ namespace GenAI
             rng= new Random();
             testscr = 0;
 
-            genCount = 0;
-            genBestScore = 1;
-            bestScore = 5;
+            genCount = 1;
+            genBestScore = 1.0;
+            bestScore = 0.0;
 
             curDist = 0.0;
             genBestDist = 1.0;
@@ -93,7 +95,7 @@ namespace GenAI
             queue.Clear();
             count = 0;
             pipes.Clear();
-            curScore = 0;
+            curScore = 0.0;
 
 
             // make new pipe instantly
@@ -172,7 +174,7 @@ namespace GenAI
             // moves the pipes
             foreach (Pipe pipe in pipes)
             {
-                pipe.move(curScore);
+                pipe.move();
             }
 
             
@@ -205,7 +207,7 @@ namespace GenAI
                 if (tempPipe.topRect.Right < player.Position.Left)// change 0 to player.x
                 {
                     queue.Dequeue();
-                    curScore++; // 
+                    curScore+= 1.0; // 
                 }
             }
 
@@ -235,7 +237,7 @@ namespace GenAI
             }
 
 
-            if(curScore> genBestScore + 10)
+            if(curScore>= genBestScore + 10.0)
             {
                 player.isAlive = false;
             }
@@ -295,9 +297,15 @@ namespace GenAI
                 popCount = 0;
                 if (genBestDist > bestDist)
                 {
+                    //fitness test
+
+                    System.Diagnostics.Debug.WriteLine($"gen: {genCount - 1}, fit: {(genBestScore - bestScore) * 0.0001}"); // figure out why fitness tester no work
+                    
                     bestDist = genBestDist;
                     bestScore = genBestScore;
                     bestFormula = genBestFormula;
+
+                    
                 }
                 // variance = 1.0 / (bestscore / 5.0)
                 double variant = 5.0 / (bestScore / 5.0);
