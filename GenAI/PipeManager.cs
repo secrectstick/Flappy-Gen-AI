@@ -18,8 +18,8 @@ namespace GenAI
 
         Random rng;
 
-        
 
+        string fitTest;
 
         public Texture2D pipeTexture;
         public SpriteFont arial;
@@ -85,6 +85,7 @@ namespace GenAI
             curFormula = new Formula(10.0);
             genBestFormula = new Formula(10.0);  
             bestFormula = new Formula(10.0);
+            fitTest = " ";
         }
 
         // reset method 
@@ -299,7 +300,7 @@ namespace GenAI
                 {
                     //fitness test
 
-                    System.Diagnostics.Debug.WriteLine($"gen: {genCount - 1}, fit: {(genBestScore - bestScore) * 0.001}"); 
+                    fitTest = $"gen: {genCount - 1}, fit: {(genBestScore - bestScore) * 0.001}"; 
                     
                     bestDist = genBestDist;
                     bestScore = genBestScore;
@@ -362,6 +363,7 @@ namespace GenAI
             sb.DrawString(arial, $"curdist: {curDist}", new Vector2(50, 250), Color.White);
             sb.DrawString(arial, $"gendist: {genBestDist}", new Vector2(50, 275), Color.White);
             sb.DrawString(arial, $"bestdist: {bestDist}", new Vector2(50, 300), Color.White);
+            sb.DrawString(arial, $"{fitTest}", new Vector2(50, 325), Color.White);
         }
 
     }
